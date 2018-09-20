@@ -141,7 +141,7 @@ class TaskViewSet(viewsets.ViewSet):
                     for file in filesList]
 
         if len(files) <= 1:
-            raise exceptions.ValidationError(detail="Cannot create task, you need at least 2 images")
+            raise exceptions.ValidationError(detail="Cannot create task, you need at least 2 images:" + str(files))
 
         with transaction.atomic():
             task = models.Task.objects.create(project=project,

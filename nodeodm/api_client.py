@@ -6,6 +6,7 @@ import requests
 import mimetypes
 import json
 import os
+import re
 from urllib.parse import urlunparse, urlencode
 from app.testwatch import TestWatch
 
@@ -72,8 +73,19 @@ class ApiClient:
             with open(path, 'rb') as f:
                 return f.read()
 
+        def request_file(url):
+            return requests.get(image).content
+        
+        def get_name(url):
+            try:
+                result = re.search('/(.*)?', s)
+                if result:
+                    return result.group(1)
+            except AttributeError:
+                print("File name not found!")
+
         files = [('images',
-                  (os.path.basename(image), read_file(image), (mimetypes.guess_type(image)[0] or "image/jpg"))
+                  (get_name(image), request_file(image), (mimetypes.guess_type(image)[0] or "image/jpg"))
                  ) for image in images]
         return requests.post(self.url("/task/new"),
                              files=files,
